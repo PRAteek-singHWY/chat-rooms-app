@@ -1,8 +1,9 @@
 # chat-rooms-app
 A scalable, real-time chat application built with WebSockets. Supports multiple, isolated chat rooms and is designed for horizontal scaling using a Pub/Sub architecture.
 
-<img width="1710" height="1112" alt="Screenshot 2025-11-07 at 01 22 04" src="https://github.com/user-attachments/assets/a13f1c3d-efd4-44d7-b981-81549d2d5785" />
+<img width="650" height="886" alt="image" src="https://github.com/user-attachments/assets/ec8bec4c-188c-4b65-9820-071dab9f2e99" />
 
-<img width="1710" height="1112" alt="Screenshot 2025-11-07 at 01 21 59" src="https://github.com/user-attachments/assets/2978fc07-3ce4-47db-8171-a8bd944e1ad5" />
+<img width="574" height="832" alt="image" src="https://github.com/user-attachments/assets/10def91d-3847-420b-850c-a11a3bc63e50" />
 
-<img width="1710" height="1112" alt="Screenshot 2025-11-07 at 01 21 53" src="https://github.com/user-attachments/assets/f375d354-6b9f-4315-b1c6-18fe4a0ee732" />
+<img width="502" height="818" alt="image" src="https://github.com/user-attachments/assets/96a79234-a22e-486c-b46c-346b6c71d03c" />
+

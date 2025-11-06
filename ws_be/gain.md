@@ -37,3 +37,22 @@ now we are creating our own WEB-SOCKET
 
 npm create vite@latest (creates a react application)
 
+
+
+
+
+
+
+
+
+<!-- GITHUB INTIALISATION -->
+
+
+git init -b main
+git add .
+git status
+git commit -m""
+git remote add origin "repo url"
+git push origin main
+git pull origin main --allow-unrelated-histories
+git pull origin main --allow-unrelated-histories --no-rebase

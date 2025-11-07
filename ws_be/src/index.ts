@@ -6,8 +6,16 @@ import { createClient } from "redis";
 // --- REDIS SETUP ---
 // We create two clients. A client in "subscriber" mode can't
 // be used for other commands (like publishing).
-const publisher = createClient();
+// const publisher = createClient();
+// const subscriber = publisher.duplicate();
+
+// following changes during deployement
+// Read the Redis URL from the environment variable we will set on Render
+const redisURL = process.env.REDIS_URL;
+
+const publisher = createClient({ url: redisURL });
 const subscriber = publisher.duplicate();
+
 
 publisher.on("error", (err) => console.error(`Redis Publisher Error`, err));
 subscriber.on("error", (err) => console.error(`Reddis Subscriber Error`, err));

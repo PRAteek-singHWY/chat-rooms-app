@@ -60,11 +60,10 @@ const App = () => {
     // const ws = new WebSocket("ws://localhost:8080");
 
     // Read the 'port' from the URL (e.g., ?port=8080)
-    const query = new URLSearchParams(window.location.search);
-    const wsPort = query.get("port") || "8080"; // Default to 8080
+    const wsURL = import.meta.env.VITE_WS_URL;
 
-    const ws = new WebSocket(`ws://localhost:${wsPort}`);
-    console.log(`Connecting to WebSocket on port ${wsPort}`);
+    const ws = new WebSocket(wsURL);
+    console.log(`Connecting to WebSocket at ${wsURL}`);
     setSocket(ws);
     setSocket(ws);
     ws.onmessage = (event) => {

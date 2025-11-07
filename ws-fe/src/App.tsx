@@ -5,7 +5,7 @@ interface ChatMessage {
   type: "chat" | "system";
   sender?: string; //"Another user" || "You" || "System"
   message: string;
-  color: string;
+  color?: string;
 }
 
 const App = () => {
@@ -57,7 +57,15 @@ const App = () => {
 
   useEffect(() => {
     // establishing(initiating) a connection with ws server
-    const ws = new WebSocket("ws://localhost:8080");
+    // const ws = new WebSocket("ws://localhost:8080");
+
+    // Read the 'port' from the URL (e.g., ?port=8080)
+    const query = new URLSearchParams(window.location.search);
+    const wsPort = query.get("port") || "8080"; // Default to 8080
+
+    const ws = new WebSocket(`ws://localhost:${wsPort}`);
+    console.log(`Connecting to WebSocket on port ${wsPort}`);
+    setSocket(ws);
     setSocket(ws);
     ws.onmessage = (event) => {
       // the server sends json so we parse it
@@ -69,11 +77,25 @@ const App = () => {
         // message: `You successfully joined room: ${roomName}`,
 
         // here data is being given to setMessages becuase we already created a interface for it
+        if (data.message.startsWith("You successfully joined")) {
+          setMessages((prevMessages) => [...prevMessages, data]);
+          setIsInRoom(true); // This is what moves us to the chat
+          return; // Stop here.
+        }
+
+        // here when reddis send back all those system message about parteek jhoined don't hshow that
+        if (data.message.includes(userName)) {
+          return; // e.g., Don't show "Prateek joined..." to Prateek
+        }
+
+        // but If it's a system message about *someone else*, show it.
         setMessages((prevMessages) => [...prevMessages, data]);
-        // now change state to true that in room is true
-        setIsInRoom(true);
       } else if (data.type === "chat") {
-        setMessages((prevMessages) => [...prevMessages, data]);
+        const newSender = data.sender === userName ? "You" : data.sender;
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { ...data, sender: newSender },
+        ]);
       }
     };
 
@@ -81,7 +103,7 @@ const App = () => {
     return () => {
       ws.close();
     };
-  }, []);
+  }, [userName]);
 
   // if user comes in for teh first time (not yet in any room)
   if (!isInRoom) {
@@ -125,7 +147,7 @@ const App = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1 text-green-400">
+                <label className="block text-sm font-medium  mb-1 text-green-400">
                   Username
                 </label>
                 <input

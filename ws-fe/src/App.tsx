@@ -23,7 +23,13 @@ const App = () => {
   const [userName, setUserName] = useState<string>("");
   // affter clicking the join room button
   const handleJoinRoom = () => {
-    if (!socket || roomName.trim() === "" || userName.trim() === "") {
+    if (
+      !socket ||
+      socket.readyState !== WebSocket.OPEN || // <-- ADD THIS CHECK
+      roomName.trim() === "" ||
+      userName.trim() === ""
+    ) {
+      console.log("Cannot join room, socket not open or form invalid.");
       return;
     }
 

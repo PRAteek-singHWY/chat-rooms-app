@@ -178,7 +178,7 @@ This project is licensed under the **MIT License**.
 
 ### 💡 Summary
 
-* Built with modern technologies: React, Node.js, Redis
+* Built with modern technologies: React, Node.js, Docker, Redis
 * Real-time chat via WebSockets
 * Horizontally scalable and stateless
 * A great foundation for real-world systems like Discord, Slack, or WhatsApp 🚀

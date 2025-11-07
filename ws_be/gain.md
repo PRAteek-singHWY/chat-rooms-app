@@ -56,3 +56,17 @@ git remote add origin "repo url"
 git push origin main
 git pull origin main --allow-unrelated-histories
 git pull origin main --allow-unrelated-histories --no-rebase
+
+
+
+
+
+
+
+<!-- docker setting up  -->
+
+docker run -d -p 6379:6379 --name my-chat-redis redis
+
+docker ps  -> (This is a command to list all running (p)rocesses or container(s))
+
+npm install redis <!-- This will download and install the redis Node.js client, adding it to your package.json and node_modules.-->

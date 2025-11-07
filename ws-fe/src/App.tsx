@@ -52,6 +52,7 @@ const App = () => {
 
     setIsInRoom(false);
     socket.send(JSON.stringify({ type: "leave_room" }));
+    setMessages([]);
   };
 
   useEffect(() => {

@@ -92,6 +92,7 @@ wss.on("connection", function (socket) {
             }
         }
         else {
+            //leave_room
             const info = SocketInfo.get(socket); //fecth socket's informatipon
             if (!info)
                 return;

@@ -10,7 +10,10 @@ A **real-time, room-based chat application** built to be horizontally scalable. 
 The image below shows the application running in its final **"Step 3"** architecture.
 
 
+
 <img width="1691" height="1106" alt="image" src="https://github.com/user-attachments/assets/7c297162-92f2-4243-aab1-a757c69c3bb3" />
+
+
 
 
 * On the **left**, a user is connected to a server on **port 8080**.

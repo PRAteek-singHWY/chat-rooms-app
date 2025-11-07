@@ -307,3 +307,102 @@ Prateek sent a message that went Client -> Server A -> Redis.
 It was broadcast from Redis -> Server A -> Client A (Prateek).
 
 ...and also Redis -> Server B -> Client B (John).
+
+
+
+
+
+
+
+
+
+
+
+<!-- ultimatum ⬇️ -->
+
+
+This is the perfect question. You've hit on the exact difference between two types of "memory."
+
+You are 100% correct. When the WebSocket connection breaks, that user's information does vanish from the server (we delete it in our socket.on('close') function).
+
+So, what is "safe" in Redis?
+
+In our specific application, the "state" we moved to Redis is NOT a list of users or a list of rooms.
+
+The ONLY thing "safe" in Redis is the list of servers that are currently subscribed to a channel.
+
+That's it. It's a "mailing list" for the servers, not for the users.
+
+Let's walk through it.
+
+The "State" in Redis is Just a Mailing List
+Think of Redis as the Post Office's central sorting room. The "state" is just the "Mail Forwarding List."
+
+1. Server A Starts (You run PORT=8080 npm run dev)
+Redis's Memory: {} (Empty)
+
+2. Prateek joins "room-123" (connects to Server A)
+Server A runs subscriber.subscribe("room-123", ...)
+
+Server A tells Redis: "Hi, this is Server A. Please add me to the mailing list for 'room-123'."
+
+Redis's Memory:
+
+{"channel": "room-123", "subscribers": [Server A]}
+
+3. John joins "room-123" (connects to Server B)
+Server B runs subscriber.subscribe("room-123", ...)
+
+Server B tells Redis: "Hi, this is Server B. Please add me to the mailing list for 'room-123' as well."
+
+Redis's Memory:
+
+{"channel": "room-123", "subscribers": [Server A, Server B]}
+
+THIS IS THE STATE! This list is the entire "memory" we are storing in Redis. It's not a list of users ("Prateek", "John"). It's a list of servers that want to get mail for "room-123".
+
+Now, Let's Answer Your Question: "When connection breaks..."
+You are right, everything does vanish. But it vanishes gracefully.
+
+4. Prateek disconnects (his WebSocket breaks)
+Server A's socket.on('close') code runs.
+
+Server A deletes Prateek from its local "sticky notes" (rooms and SocketInfo).
+
+Server A then checks: "Is anyone else on my server in 'room-123'?"
+
+The answer is "No."
+
+So, Server A runs subscriber.unsubscribe("room-123").
+
+Server A tells Redis: "Hi, this is Server A. You can take me off the mailing list for 'room-123' now. I'm not interested anymore."
+
+Redis's Memory:
+
+{"channel": "room-123", "subscribers": [Server B]}
+
+You are exactly right. Prateek's info is gone from everywhere. It vanished from Server A's "sticky notes," and as a result, Server A's subscription was removed from Redis.
+
+The "state" in Redis is just as temporary as the connections.
+
+So, Why Is It "Stateless" and "Safe"?
+This is the key. The "safety" we get from Redis is NOT permanent storage (like a database).
+
+The "safety" is communication.
+
+STATEFUL (Step 2): Server A had no way to know Server B existed. They couldn't talk.
+
+STATELESS (Step 3): Server A and Server B can both talk to the central Redis. The "state" (the subscriber list) is SHARED and CENTRALIZED.
+
+The problem we solved wasn't "How do we save chats forever?" The problem we solved was "How do we make Server A and Server B talk to each other?"
+
+The "state" (the subscription list) is "safe" in Redis in the sense that it's not on one server's private notebook. It's in a central, shared location where all servers can see and use it.
+
+P.S. How would you save messages?
+If you wanted to save the chat history so it doesn't vanish, you would use a different Redis feature.
+
+In your chat_message handler, in addition to publisher.publish(...), you would add a second command: await publisher.lPush("history:room-123", chatMessage);
+
+This lPush command pushes the message into a permanent List in Redis. This list would be safe and would not vanish.
+
+Our app doesn't do this. We only use Pub/Sub, which is a real-time messaging system, not a permanent database. Your observation is 100% correct.
